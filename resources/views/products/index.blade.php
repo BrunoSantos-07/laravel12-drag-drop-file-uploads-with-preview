@@ -11,5 +11,35 @@
                 Add Product
             </button>
         </div>
+
+        {{-- Table --}}
+        <div class="overflow-x-auto rounded bg-white shadow-md">
+            <table class="min-w-full table-auto">
+                <thead>
+                    <tr class="border-b border-gray-400 bg-gray-100 text-left">
+                        <th class="px-4 py-2 font-semibold">#</th>
+                        <th class="px-4 py-2 font-semibold">Name</th>
+                        <th class="px-4 py-2 font-semibold">SKU</th>
+                        <th class="flex items-center px-4 py-2 font-semibold">Price <i data-lucide="indian-rupee" class="ml-1 h-4 w-4"></i></th>
+                        <th class="px-4 py-2 font-semibold">Status</th>
+                        <th class="px-4 py-2 font-semibold">Featured Image</th>
+                        <th class="px-4 py-2 font-semibold">Action</th>
+                    </tr>
+                </thead>
+
+                {{-- Tbody --}}
+                <tbody>
+                    <tr class="border-b border-gray-300">
+                        <td class="px-4 py-2"></td>
+                        <td class="px-4 py-2"></td>
+                        <td class="px-4 py-2"></td>
+                        <td class="px-4 py-2"></td>
+                        <td class="px-4 py-2"></td>
+                        <td class="px-4 py-2"></td>
+                        <td class="px-4 py-2"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 @endsection
