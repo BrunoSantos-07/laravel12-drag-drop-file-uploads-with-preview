@@ -16,7 +16,7 @@
         <div class="overflow-x-auto rounded bg-white shadow-md">
             <table class="min-w-full table-auto">
                 <thead>
-                    <tr class="border-b border-gray-400 bg-gray-100 text-left">
+                    <tr class="border-b border-gray-800 bg-gray-800 text-left text-gray-100">
                         <th class="px-4 py-2 font-semibold">#</th>
                         <th class="px-4 py-2 font-semibold">Name</th>
                         <th class="px-4 py-2 font-semibold">SKU</th>
@@ -42,4 +42,7 @@
             </table>
         </div>
     </div>
+
+    {{-- Include product modal --}}
+    @include('products.partials.product-modal')
 @endsection
