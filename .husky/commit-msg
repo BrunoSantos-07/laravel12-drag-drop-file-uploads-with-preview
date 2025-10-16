@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Cores
+NC='\033[0m'
+BBlue='\033[1;34m'
+BRed='\033[1;31m'
+
+# Aceita tanto ABC-123 quanto 123-abc
+REGEX_ISSUE_ID="[a-zA-Z0-9]+-[a-zA-Z0-9,\.\_\-]+"
+BRANCH_NAME=$(git symbolic-ref --short HEAD)
+ISSUE_ID=$(echo "$BRANCH_NAME" | grep -o -E "$REGEX_ISSUE_ID")
+COMMIT_MESSAGE=$(cat "$1")
+
+if [ -z "$ISSUE_ID" ]; then
+    echo -e "${BRed}Esta Branch não está no Padrão... ${NC}"
+    exit 1
+fi
+
+# i.g. HEY-1: HEY-1: my feature
+if [ "${COMMIT_MESSAGE%%$ISSUE_ID*}" != "$COMMIT_MESSAGE" ]; then
+    exit 0
+fi
+
+echo "$ISSUE_ID: $COMMIT_MESSAGE" >$1
