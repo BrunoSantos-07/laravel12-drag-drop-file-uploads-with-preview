@@ -69,8 +69,10 @@
             <div>
                 <label class="mb-1 block text-sm font-medium text-gray-100">Featured Image</label>
 
-                <div class="w-full cursor-pointer rounded-lg border-2 border-dashed border-purple-400 bg-gray-50 px-5 py-20 text-center transition hover:bg-gray-100">
-                    <input type="file" name="images[]" multiple accept="image/*" />
+                <div @click="$refs.fileInput.click()" @dragover.prevent @drop.prevent="handleDrop($event)"
+                    class="w-full cursor-pointer rounded-lg border-2 border-dashed border-purple-400 bg-gray-50 px-5 py-20 text-center transition hover:bg-gray-100"
+                >
+                    <input @change="handleImage($event)" type="file" name="images[]" class="hidden" accept="image/*" x-ref="fileInput"/>
 
                     <p class="flex items-center justify-center font-semibold text-purple-600">
                         <i data-lucide="upload" class="mr-2"></i>Click or Drag Image to Upload

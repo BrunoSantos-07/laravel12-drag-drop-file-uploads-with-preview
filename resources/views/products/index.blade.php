@@ -57,6 +57,9 @@
                 isModalOpen: false,
                 mode: 'create',
                 modalTitle: 'Create Product',
+                form: productManager.defaultForm(),
+                imagePreviews: [],
+                errors: [],
 
                 // open modal
                 openModal(type) {
@@ -66,8 +69,55 @@
                 // close modal
                 closeModal() {
                     this.isModalOpen = false;
+                },
+
+                // Handle image
+                handleImage(event) {
+                    const files = Array.from(event.target.files);
+
+                    this.processFilesHandling(files);
+                },
+
+                // Handle drop
+                handleDrop(event) {
+                    const files = Array.from(event.dataTransfer.files);
+
+                    // File handling
+                    this.processFilesHandling(files);
+
+                    // Attaching dropped files to the actual file input
+                    const dataTransfer = new DataTransfer();
+                    files.forEach(file => dataTransfer.items.add(file));
+                    this.$refs.fileInput.files = dataTransfer.files;
+                },
+
+                processFilesHandling(files) {
+                    files.forEach(file => {
+                        if (files.type.startsWith('image/')) {
+                            this.form.images.push(file);
+                            this.imagePreviews.push({
+                                url: URL.createObjectURL(file),
+                                type: 'new',
+                                file
+                            });
+                        } else {
+                            this.errors.push(`${file.name} is not a valid image file.`);
+                        }
+                    })
                 }
             }
+        }
+
+        // Reusable state
+        productManager.defaultForm = function() {
+            return {
+                name: '',
+                price: '',
+                status: '',
+                description: '',
+                images: [],
+                existingImages: []
+            };
         }
     </script>
 @endpush
