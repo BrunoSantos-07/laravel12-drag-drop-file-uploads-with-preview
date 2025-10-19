@@ -1,7 +1,7 @@
 @extends('layouts.app');
 
 @section('content')
-    <div x-data="productManager()" class="py-4">
+    <div x-data="productManager()" x-init="init()" class="py-4">
         <div class="mb-4 flex items-center justify-between">
             <h1 class="text-2xl font-bold">Product List</h1>
 
@@ -43,8 +43,20 @@
             </table>
         </div>
 
-        {{-- Include product modal --}}
+
+        {{-- Include product modal form --}}
         @include('products.partials.product-modal')
+
+        {{-- If any errors --}}
+        @if ($errors->any())
+            <script>
+                document.addEventListener('alpine:init', () => {
+                    Alpine.store('productStore', {
+                        isModalOpen: true,
+                    });
+                });
+            </script>
+        @endif
     </div>
 @endsection
 
@@ -60,6 +72,14 @@
                 form: productManager.defaultForm(),
                 imagePreviews: [],
                 errors: [],
+
+                // Init lifecycle
+                init() {
+                    if (Alpine.store('productStore')?.isModalOpen) {
+                        this.openModal('create');
+                        Alpine.store('productStore').isModalOpen = false;
+                    }
+                },
 
                 // open modal
                 openModal(type) {
@@ -92,8 +112,9 @@
                 },
 
                 processFilesHandling(files) {
+                    console.log(files[0]);
                     files.forEach(file => {
-                        if (files.type.startsWith('image/')) {
+                        if (file.type.startsWith('image/')) {
                             this.form.images.push(file);
                             this.imagePreviews.push({
                                 url: URL.createObjectURL(file),
@@ -104,6 +125,23 @@
                             this.errors.push(`${file.name} is not a valid image file.`);
                         }
                     })
+                },
+
+                // Handle image remove
+                removeImage(index) {
+                    const image = this.imagePreviews[index];
+
+                    if(image.type === "exising") {
+                        this.form.existingImages = this.form.existingImages.filter(path => path !== image.featured_image);
+                    } else if (image.type === 'new') {
+                        const fileIndex = this.form.images.findIndex(file => URL.createObjectURL(file) === image.url);
+
+                        if(fileIndex !== -1) {
+                            this.form.images.splice(fileIndex, 1);
+                        }
+                    }
+
+                    this.imagePreviews.splice(index, 1);
                 }
             }
         }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class ProductController extends Controller
@@ -29,7 +30,49 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'status' => 'required|in:active, inactive',
+            'description' => 'required|string',
+            'images' => 'required|array',
+            'images.*' => 'required|max:5120',
+        ]);
+
+        $product = Product::create([
+            'name' => $request->name,
+            'slug' => Str::slug($request->name),
+            'description' => $request->description,
+            'price' => $request->price,
+            'sku' => $this->generateSku(),
+            'status' => $request->status,
+        ]);
+
+        # Image handling
+        if($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                # Upload to storage folder
+                $path = $image->store('products', 'public');
+
+                # Insert the product images
+                $product->productImages()->create([
+                    'featured_image' => $path
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Product saved successfully!');
+    }
+
+    /**
+     * Function: gererateSku
+     */
+    private function generateSku(): string {
+        do {
+            $sku = 'SKU-'.strtoupper(Str::random(8));
+        } while (Product::where('sku', $sku)->exists());
+
+        return $sku;
     }
 
     /**
